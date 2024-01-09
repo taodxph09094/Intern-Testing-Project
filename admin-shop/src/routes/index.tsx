@@ -6,6 +6,7 @@ import Loading from "../components/Loading";
 import AuthLayout from "../layouts/AuthLayout";
 import NotFoundPage from "../pages/NotFoundPage";
 
+
 type Props = {};
 
 const RenderRouter:React.FC = (props: Props) => {
@@ -14,12 +15,15 @@ const RenderRouter:React.FC = (props: Props) => {
     <>
     {isLoading.loading && <Loading />}
     <Routes>
-      <Route path="/" element={<MainRoutes />} />
+       <Route path="/" element={<MainRoutes />} />
       <Route path="/login" element={<AuthLayout />} />
-      <Route path="*" element={<NotFoundPage />} />
+      <Route path="*" element={<NotFoundPage />} /> */
+
+
     </Routes>
     </>
   );
 };
 
-export default RenderRouter;
+
+export default RenderRouter

@@ -34,7 +34,7 @@ axiosInstance.interceptors.response.use(
     }
 
     return {
-      status: true,
+      success: true,
       message: config?.data?.message || "success",
       result: config.data,
       headers: config.headers,
@@ -44,17 +44,13 @@ axiosInstance.interceptors.response.use(
     let errorMessage = "Lỗi hệ thống";
     let errorStatus = "";
     let message = error.response.data.detail;
-    if (error?.response?.status === 401) {
-      localStorage.clear();
-      return navigateTo("/login");
-    }
     if (error?.message?.includes("Network Error")) {
       errorMessage = "";
     } else {
       errorStatus = error?.message;
     }
     return {
-      status: false,
+      success: false,
       message: message,
       result: errorStatus,
     };
@@ -63,9 +59,9 @@ axiosInstance.interceptors.response.use(
 
 export type Response<T = any> = {
   [x: string]: any;
-  status: boolean;
+  success: boolean;
   message: string;
-  // result: T;
+  result: T;
 };
 
 export type MyResponse<T = any> = Promise<Response<T>>;
