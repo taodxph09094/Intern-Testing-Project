@@ -3,4 +3,7 @@ export interface Login {
     password: string;
 }
 
-export interface ResultUser {}
+export interface ResultUser {
+    message: string;
+    success: boolean;
+}

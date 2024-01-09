@@ -4,6 +4,11 @@ export const settings = {
 
 export const endpoints ={
     user: {
-        login: `login`
+        login: `login`,
+        logout: `logout`,
+        detailUserById: `admin/user`
+    },
+    product: {
+
     }
 }
