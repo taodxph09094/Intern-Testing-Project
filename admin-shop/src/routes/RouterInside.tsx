@@ -1,4 +1,4 @@
-import { }from "antd";
+// import { }from "antd";?
 import Banner from "../pages/Banner";
 import Logo from "../pages/Logo";
 import Product from "../pages/Product";
@@ -10,13 +10,13 @@ import MenuAdmin from "../pages/MenuAdmin";
 
 
 export const RouterInside : React.FC = () => {
-    console.log('qoiwqwl')
+   console.log('iqkwjnqlnql')
     return(
       <>
       <Routes>
-      <Route path="/menu" element={<MenuAdmin />} />
-
       
+            
+        <Route path="/menu" element={<MenuAdmin />} />
         <Route path="/banner" element={<Banner />} />
         <Route path="/logo" element={<Logo />} />
         <Route path="/product" element={<Product />} />

@@ -1,9 +1,9 @@
 import React from 'react'
-import {
-    UploadOutlined,
-    UserOutlined,
-    VideoCameraOutlined,
-  } from '@ant-design/icons';
+// import {
+//     UploadOutlined,
+//     UserOutlined,
+   
+//   } from '@ant-design/icons';
 import { Menu } from 'antd';
 import Banner from '../pages/Banner';
 import Logo from '../pages/Logo';
@@ -15,47 +15,47 @@ export const MainLayoutRouter = [
     
         {
           key: '1',
-          icon: <UserOutlined />,
-          label: 'nav 1',
+        //   icon: <UserOutlined />,
+          label: 'Menu',
           path: '/menu',
-          Element: <Menu />
+          element: <Menu />
         },
         {
           key: '2',
-          icon: <VideoCameraOutlined />,
-          label: 'nav 2',
+        //   icon: <></>,
+          label: 'Banner',
           path:'/banner',
-          Element: <Banner />
+          element: <Banner />
 
         },
         {
           key: '3',
-          icon: <UploadOutlined />,
-          label: 'nav 3',
+        //   icon: <UploadOutlined />,
+          label: 'Logo',
           path:'logo',
           Element: <Logo />
 
         },
         {
-            key: '3',
-            icon: <UploadOutlined />,
-            label: 'nav 3',
+            key: '4',
+            // icon: <></>,
+            label: 'Product',
             path:'/product',
             Element: <Product />
 
           },        {
-            key: '3',
-            icon: <UploadOutlined />,
-            label: 'nav 3',
+            key: '5',
+            // icon: <></>,
+            label: 'About',
             path:'/about',
             Element: <About />
 
           },        {
-            key: '3',
-            icon: <UploadOutlined />,
-            label: 'nav 3',
+            key: '6',
+            // icon: <></>,
+            label: 'Info',
             path:'/info',
-            Element: <Info />
+            element: <Info />
 
           },
 

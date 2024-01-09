@@ -18,9 +18,8 @@ import {
 } from '@ant-design/icons';
 import { Layout, Menu, Button, theme } from 'antd';
 import { MainLayoutRouter } from '../routes/MainLayoutRouter';
-import { Form, Link, Outlet } from 'react-router-dom';
-import { RouterInside } from '../routes';
-
+import {  Link, Outlet } from 'react-router-dom';
+import { RouterInside } from '../routes/RouterInside';
 
 const { Header, Sider, Content } = Layout;
 
@@ -29,7 +28,7 @@ const MainLayouts : React.FC = () => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
-
+  
   return (
     <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
@@ -40,8 +39,8 @@ const MainLayouts : React.FC = () => {
           defaultSelectedKeys={['1']}
          >
           {MainLayoutRouter.map((item) =>(
-          <Menu.Item key={item.key} icon={item.icon}>
-              <Link to={item.path}>{item.Element}</Link>
+          <Menu.Item key={item.key} >
+              <Link to={item.path}>{item.label}</Link>
           </Menu.Item>)
           )}
 
@@ -69,7 +68,9 @@ const MainLayouts : React.FC = () => {
             borderRadius: borderRadiusLG,
           }}
         >
-        
+          
+         <RouterInside />
+         <Outlet />
         </Content>
       </Layout>
     </Layout>
