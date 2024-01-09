@@ -2,6 +2,7 @@ import React from "react";
 import { Navigate } from "react-router-dom";
 import MainLayouts from "../layouts/MainLayouts";
 
+
 const MainRoutes: React.FC = () => {
   const storedUser = localStorage.getItem("user_token");
   if (storedUser && storedUser) {
@@ -12,7 +13,8 @@ const MainRoutes: React.FC = () => {
     );
   } else {
     // return <Navigate to="/login" />;
-    return  <MainLayouts />
+    return  <MainLayouts /> 
+      
   }
 };
 
