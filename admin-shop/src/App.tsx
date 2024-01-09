@@ -1,11 +1,9 @@
-import './App.css'
+import './App.scss'
+import RenderRouter from './routes'
 
 function App() {
   return (
-    <>
-      <div>
-      </div>
-    </>
+    <RenderRouter />
   )
 }
 
