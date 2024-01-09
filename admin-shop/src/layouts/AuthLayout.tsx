@@ -2,6 +2,7 @@ import { Button, Form, Input, notification } from "antd";
 import React from "react";
 import { Login } from "../interfaces/user";
 import { useDispatch } from "react-redux";
+import Notification from "../components/Notification";
 
 type Props = {};
 
@@ -9,13 +10,13 @@ const AuthLayout: React.FC = (props: Props) => {
     const dispatch = useDispatch();
   const onFinish = (values: Login) => {
     console.log("Success:", values);
+    // dispatch(<Notification />)
+    notification.success({
+        message: 'Đăng nhập thành công',
+        description:
+          `Xin chào ${values.email}! Bạn đã đăng nhập thành công.`,
 
-    // notification.success({
-    //     message: 'Đăng nhập thành công',
-    //     description:
-    //       `Xin chào ${values.email}! Bạn đã đăng nhập thành công.`,
-
-    //   });
+      });
   };
 
   return (
