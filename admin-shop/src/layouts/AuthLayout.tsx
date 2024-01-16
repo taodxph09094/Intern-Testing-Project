@@ -2,12 +2,36 @@ import { Button, Form, Input } from "antd";
 import React from "react";
 import { Login } from "../interfaces/user";
 import { loginUser } from "../api/components/userApi";
+import { useDispatch } from "react-redux";
+import { showNotification } from "../stores/reducers/notificationReducer";
+import { Formik, Field, ErrorMessage } from "formik";
+import { loginValidationSchema } from "./components/loginValidationSchema";
+import { setUser } from "../stores/reducers/userReducer";
+import { useNavigate } from "react-router-dom";
 
-type Props = {};
+const AuthLayout: React.FC = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const initialValues = {
+    email: null,
+    password: null,
+  };
 
-const AuthLayout: React.FC = (props: Props) => {
   const onFinish = async (values: Login) => {
-   
+    const response = await loginUser(values);
+    if (response.status) {
+      localStorage.setItem(
+        "user_token",
+        JSON.stringify(response?.result?.data?.token)
+      );
+      dispatch(setUser(response.result.data?.user));
+      dispatch(
+        showNotification({ message: response.message, type: "success" })
+      );
+      navigate("/");
+    } else {
+      dispatch(showNotification({ message: response.message, type: "error" }));
+    }
   };
 
   return (
@@ -19,36 +43,65 @@ const AuthLayout: React.FC = (props: Props) => {
             alt="Login"
           />
         </div>
-        <Form
-          name="login-form"
-          initialValues={{ remember: true }}
-          onFinish={onFinish}
-        >
-          <p className="form-title">Welcome back</p>
-          <p>Login to the Dashboard</p>
-          <Form.Item
-            name="email"
-            rules={[{ required: true, message: "Please input your email!" }]}
-          >
-            <Input placeholder="Email" />
-          </Form.Item>
 
-          <Form.Item
-            name="password"
-            rules={[{ required: true, message: "Please input your password!" }]}
-          >
-            <Input.Password placeholder="Password" />
-          </Form.Item>
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              className="login-form-button"
-            >
-              LOGIN
-            </Button>
-          </Form.Item>
-        </Form>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={loginValidationSchema}
+          onSubmit={onFinish}
+        >
+          {(formikProps) => (
+            <Form name="login-form" onFinish={formikProps.handleSubmit}>
+              <p className="form-title">Welcome back</p>
+              <p>Login to the Dashboard</p>
+              <Form.Item>
+                <Field
+                  name="email"
+                  placeholder="Email"
+                  as={Input}
+                  className={
+                    formikProps.values.email === "" ||
+                    formikProps.values.email == null
+                      ? "input-error"
+                      : "input-not"
+                  }
+                />
+                <ErrorMessage
+                  name="email"
+                  component="div"
+                  className="error-message"
+                />
+              </Form.Item>
+              <Form.Item>
+                <Field
+                  name="password"
+                  placeholder="Password"
+                  as={Input.Password}
+                  style={{
+                    border:
+                      formikProps.values.password === "" ||
+                      formikProps.values.password == null
+                        ? "1.5px solid red"
+                        : null,
+                  }}
+                />
+                <ErrorMessage
+                  name="password"
+                  component="div"
+                  className="error-message"
+                />
+              </Form.Item>
+              <Form.Item>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  className="login-form-button"
+                >
+                  LOGIN
+                </Button>
+              </Form.Item>
+            </Form>
+          )}
+        </Formik>
       </div>
     </div>
   );

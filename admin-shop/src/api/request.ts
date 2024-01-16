@@ -2,7 +2,6 @@
 // @ts-nocheck
 
 import type { AxiosRequestConfig, Method } from "axios";
-import { message as $message } from "antd";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 const axiosInstance = axios.create({
@@ -12,13 +11,13 @@ const navigateTo = (path: string) => {
   const navigate = useNavigate();
   navigate(path);
 };
+
 axiosInstance.interceptors.request.use(
   (config) => {
     const storedUser = localStorage.getItem("user_token");
-    if (storedUser && storedUser) {
-      config.headers.Authorization = `Bearer ${
-        JSON.parse(storedUser).access_token
-      }`;
+    let token = JSON.parse(storedUser);
+    if (storedUser && token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
 
     return config;
@@ -29,37 +28,29 @@ axiosInstance.interceptors.request.use(
 );
 axiosInstance.interceptors.response.use(
   (config) => {
-    if (config?.data?.message) {
-      $message.success(config.data.message);
-    }
-
     return {
-      success: true,
+      status: true,
       message: config?.data?.message || "success",
       result: config.data,
       headers: config.headers,
     };
   },
   (error) => {
-    let errorMessage = "Lỗi hệ thống";
-    let errorStatus = "";
-    let message = error.response.data.detail;
-    if (error?.message?.includes("Network Error")) {
-      errorMessage = "";
-    } else {
-      errorStatus = error?.message;
-    }
+    console.log(error, 'hâ')
+    // if (error?.response?.status === 401) {
+    //   localStorage.clear();
+    //   return navigateTo("/login");
+    // }
     return {
-      success: false,
-      message: message,
-      result: errorStatus,
+      status: false,
+      message: error?.response?.data?.message,
     };
   }
 );
 
 export type Response<T = any> = {
   [x: string]: any;
-  success: boolean;
+  status: boolean;
   message: string;
   result: T;
 };
