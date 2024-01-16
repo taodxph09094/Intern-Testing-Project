@@ -2,7 +2,6 @@
 // @ts-nocheck
 
 import type { AxiosRequestConfig, Method } from "axios";
-import { message as $message } from "antd";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 const axiosInstance = axios.create({
@@ -29,37 +28,37 @@ axiosInstance.interceptors.request.use(
 );
 axiosInstance.interceptors.response.use(
   (config) => {
-    if (config?.data?.message) {
-      $message.success(config.data.message);
-    }
-
     return {
-      success: true,
+      status: true,
       message: config?.data?.message || "success",
       result: config.data,
       headers: config.headers,
     };
   },
   (error) => {
-    let errorMessage = "Lỗi hệ thống";
-    let errorStatus = "";
-    let message = error.response.data.detail;
-    if (error?.message?.includes("Network Error")) {
-      errorMessage = "";
-    } else {
-      errorStatus = error?.message;
+    // let errorMessage = "Lỗi hệ thống";
+    // let errorStatus = "";
+    // let message = error.response.data.detail;
+    if (error?.response?.status === 401) {
+      localStorage.clear();
+      return navigateTo("/login");
     }
+    // console.log(error)
+    // if (error?.message?.includes("Network Error")) {
+    //   errorMessage = "";
+    // } else {
+    //   errorStatus = error?.message;
+    // }
     return {
-      success: false,
-      message: message,
-      result: errorStatus,
+      status: false,
+      message: error?.response?.data?.message,
     };
   }
 );
 
 export type Response<T = any> = {
   [x: string]: any;
-  success: boolean;
+  status: boolean;
   message: string;
   result: T;
 };
