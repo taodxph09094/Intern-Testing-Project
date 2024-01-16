@@ -13,8 +13,8 @@ const AuthLayout: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const initialValues = {
-    email: "",
-    password: "",
+    email: null,
+    password: null,
   };
 
   const onFinish = async (values: Login) => {

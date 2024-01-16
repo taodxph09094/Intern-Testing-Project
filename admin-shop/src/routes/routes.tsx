@@ -8,34 +8,15 @@ export const routes = [
     icon: <MenuOutlined />,
   },
   {
-    key: "4",
-    path: "/product",
+    key: "2",
+    path: "/products",
     label: "Product",
     icon: <MenuOutlined />,
   },
   {
-    key: "2",
-    path: "/banner",
-    label: "Banner",
-    icon: <MenuOutlined />,
-  },
-  {
     key: "3",
-    path: "/logo",
-    label: "Logo",
+    path: "/setting",
+    label: "Cau hinh",
     icon: <MenuOutlined />,
-  },
-
-  {
-    key: "5",
-    path: "/about",
-    label: "About",
-    icon: <MenuOutlined />,
-  },
-  {
-    key: "6",
-    path: "/info",
-    label: "Info",
-    icon: <MenuOutlined />,
-  },
+  }
 ];

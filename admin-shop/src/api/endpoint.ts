@@ -10,5 +10,8 @@ export const endpoints ={
     },
     product: {
 
+    },
+    menu: {
+        getList: `admin/menu/all`
     }
 }

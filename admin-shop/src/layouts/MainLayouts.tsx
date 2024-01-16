@@ -13,7 +13,6 @@ const MainLayouts: React.FC = () => {
   } = theme.useToken();
 
   const location = useLocation();
-  console.log(location);
   return (
     <Layout>
       <Sider

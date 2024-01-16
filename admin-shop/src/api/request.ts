@@ -11,13 +11,13 @@ const navigateTo = (path: string) => {
   const navigate = useNavigate();
   navigate(path);
 };
+
 axiosInstance.interceptors.request.use(
   (config) => {
     const storedUser = localStorage.getItem("user_token");
-    if (storedUser && storedUser) {
-      config.headers.Authorization = `Bearer ${
-        JSON.parse(storedUser).access_token
-      }`;
+    let token = JSON.parse(storedUser);
+    if (storedUser && token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
 
     return config;
@@ -36,18 +36,10 @@ axiosInstance.interceptors.response.use(
     };
   },
   (error) => {
-    // let errorMessage = "Lỗi hệ thống";
-    // let errorStatus = "";
-    // let message = error.response.data.detail;
-    if (error?.response?.status === 401) {
-      localStorage.clear();
-      return navigateTo("/login");
-    }
-    // console.log(error)
-    // if (error?.message?.includes("Network Error")) {
-    //   errorMessage = "";
-    // } else {
-    //   errorStatus = error?.message;
+    console.log(error, 'hâ')
+    // if (error?.response?.status === 401) {
+    //   localStorage.clear();
+    //   return navigateTo("/login");
     // }
     return {
       status: false,
