@@ -1,13 +1,20 @@
-import { Space, Table, TableProps, Tag } from "antd";
-import React, { useEffect, useState } from "react";
+import { Button, Card, Form, Input, Space, Table, TableProps, Tag } from "antd";
+import React, { useEffect, useMemo, useState } from "react";
+// import { Menu  } from "./dto";
 import { Menu } from "./dto";
-import { getDanhSachMenu } from "./api";
+import { getDanhSachMenu, getXoaMenu } from "./api";
 import { useDispatch } from "react-redux";
 import { showNotification } from "../../stores/reducers/notificationReducer";
+import AddData from "./getAddData";
+import EditData from "./getEditData";
 
 const MenuPage: React.FC = () => {
   const [data, setData] = useState<Menu[]>([]);
+  const [isModal, setIsModal] = useState(false);
+  const [isModalEdit, setIsModalEdit] = useState(false);
   const dispatch = useDispatch();
+  const [paramSearch, setParamSearch] = useState({});
+  const [selectedRecordId, setSelectedRecordId] = useState<string | null>(null);
   const columns: TableProps<Menu>["columns"] = [
     {
       title: "Name",
@@ -30,8 +37,8 @@ const MenuPage: React.FC = () => {
       key: "status",
       dataIndex: "status",
       render: (_, { status }) => {
-        let color = status ? "green" : "volcano";
-        let show = status ? "ACTIVE" : "INACTIVE";
+        const color = status ? "green" : "volcano";
+        const show = status ? "ACTIVE" : "INACTIVE";
         return <Tag color={color}>{show}</Tag>;
       },
     },
@@ -40,33 +47,96 @@ const MenuPage: React.FC = () => {
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <a>Invite {record.name}</a>
-          <a>Delete</a>
+          <Button onClick={() => handleEdit(record._id)}>Edit</Button>
+          <Button onClick={() => handleDelete(record._id)}>Delete</Button>
         </Space>
       ),
     },
   ];
-  useEffect(() => {
-    const getListMenu = async() => {
-      try{
-        const response = await getDanhSachMenu();
-        console.log(response,'addn')
-        if(response.status){
 
-        }else{
-          dispatch(
-            showNotification({ message: response.message, type: "error" })
-          );
-        }
-      }catch(error){
-        
+  // useEffect(() => {
+  //   const getListMenu = async () => {
+  //     try {
+  //       const response = await getDanhSachMenu();
+  //       if (response.status) {
+  //         setData(response.result);
+  //       } else {
+  //         dispatch(
+  //           showNotification({ message: response.message, type: "error" })
+  //         );
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   if (paramSearch) {
+  //     getListMenu();
+  //   }
+  // }, [paramSearch]);
+
+  const handleDelete = async (_id: string) => {
+    try {
+      const res = await getXoaMenu(_id);
+      console.log(res, "cuong");
+      if (res.status) {
+        dispatch(showNotification({ message: res.message, type: "success" }));
+      } else {
+        dispatch(showNotification({ message: res.message, type: "error" }));
       }
+    } catch (error) {
+      console.error("An error occurred while deleting menu:", error);
     }
-    getListMenu();
-  },[])
+  };
+  const handleOpen = () => {
+    setIsModal(true);
+  };
+  const handleEdit = (recordId: string) => {
+    setSelectedRecordId(recordId);
+    setIsModalEdit(true);
+  };
+
+  const viewTable = useMemo(() => {
+    return <Table columns={columns} dataSource={data} />;
+  }, [data]);
   return (
     <div>
-      <Table columns={columns} dataSource={data} />
+      <Form>
+        <Card style={{ marginBottom: 10 }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Input style={{ width: 500 }} placeholder="search" />
+            <Button>Search</Button>
+          </div>
+        </Card>
+        <Card
+          title="Danh sach menu"
+          extra={
+            <Space size="middle">
+              <Button onClick={handleOpen}>Them moi</Button>
+            </Space>
+          }
+        >
+          {viewTable}
+        </Card>
+      </Form>
+
+      {/* <AddData
+        isModal={isModal}
+        setIsModal={setIsModal}
+        setParamSearch={setParamSearch}
+      />
+      <EditData
+        setParamSearch={setParamSearch}
+        isModalEdit={isModalEdit}
+        setIsModalEdit={setIsModalEdit}
+        selectedRecordId={selectedRecordId}
+        
+      /> */}
     </div>
   );
 };

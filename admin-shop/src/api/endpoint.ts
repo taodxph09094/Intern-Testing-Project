@@ -12,6 +12,15 @@ export const endpoints ={
 
     },
     menu: {
-        getList: `admin/menu/all`
+        getList: `admin/menu/all`,
+        updateMenu: `admin/menu/edit`,
+        deleteMenu: `admin/menu/delete`,
+        addMenu: `admin/menu/create`,
+        valuesMeny:`admin/menu/`
+    },
+    userList:{
+        getlist:`admin/users`,
     }
-}
+    
+
+}   

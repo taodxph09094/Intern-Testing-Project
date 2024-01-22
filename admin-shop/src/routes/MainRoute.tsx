@@ -8,7 +8,7 @@ const MainRoutes: React.FC = () => {
   if (storedUser && storedUser) {
     return (
       <>
-        {/* <Header /> */}
+        <Header />
         <MainLayouts />
       </>
     );

@@ -14,6 +14,7 @@ const navigateTo = (path: string) => {
 
 axiosInstance.interceptors.request.use(
   (config) => {
+    console.log(config, "rq");
     const storedUser = localStorage.getItem("user_token");
     let token = JSON.parse(storedUser);
     if (storedUser && token) {
@@ -23,11 +24,13 @@ axiosInstance.interceptors.request.use(
     return config;
   },
   (error) => {
+    console.log(error, "rq");
     Promise.reject(error);
   }
 );
 axiosInstance.interceptors.response.use(
   (config) => {
+    console.log(config);
     return {
       status: true,
       message: config?.data?.message || "success",
@@ -36,7 +39,6 @@ axiosInstance.interceptors.response.use(
     };
   },
   (error) => {
-    console.log(error, 'hâ')
     // if (error?.response?.status === 401) {
     //   localStorage.clear();
     //   return navigateTo("/login");

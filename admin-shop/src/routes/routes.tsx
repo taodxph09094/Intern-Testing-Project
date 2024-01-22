@@ -1,4 +1,5 @@
 import { MenuOutlined } from "@ant-design/icons";
+import AccountList from "../modules/Account";
 
 export const routes = [
   {
@@ -18,5 +19,12 @@ export const routes = [
     path: "/setting",
     label: "Cau hinh",
     icon: <MenuOutlined />,
+  },
+  {
+    key: "4",
+    path: "/account",
+    label: "Account",
+    icon: <AccountList />,
   }
+
 ];
