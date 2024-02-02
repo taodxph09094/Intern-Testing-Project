@@ -53,7 +53,8 @@ export type Response<T = any> = {
   [x: string]: any;
   status: boolean;
   message: string;
-  result: T;
+  result: {data:T};
+
 
 };
 

@@ -1,12 +1,11 @@
-import { Button, Card, Form, Input, Modal, Popconfirm, Space, Table, TableProps,  } from 'antd';
-import React, { useState } from "react";
+import { Button, Card, Form, Input,  Popconfirm, Space, Table, TableProps,  } from 'antd';
+import React, { useEffect, useState } from "react";
 import { Product } from "../Menu/dto/index";
 import AddProduct from "./AddProduct/indev";
 import EditProduct from './EditProduct/index';
-import confirm from "antd/es/modal/confirm";
-import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { showNotification } from '../../stores/reducers/notificationReducer';
 import { useDispatch } from 'react-redux';
+import { getProduct } from '../Menu/api';
 
 
 const ProductPage = () => {
@@ -14,32 +13,9 @@ const ProductPage = () => {
   const dispatch = useDispatch()
   const [modalAdd, setModalAdd] = useState(false);
   const [modalEdit, setModalEdit] = useState(false);
-  const [data, setData] = useState<Product[]>([
-    {
-      _id:'1',
-      image: "sample-image.jpg",
-      code: "ABC123",
-      name: "Sample Product 1",
-      type: "Type1",
-      brand: "Brand1",
-      price: 20.0,
-      size: "M",
-      quantity: 10,
-      status: true,
-    },
-    {
-      _id:'2',
-      image: "sample-image2.jpg",
-      code: "DEF456",
-      name: "Sample Product 2",
-      type: "Type2",
-      brand: "Brand2",
-      price: 30.0,
-      size: "L",
-      quantity: 15,
-      status: false,
-    },
-  ]);
+  const [data, setData] = useState<Product>()
+  const [paramSearch, setParamSearch] = useState({})
+ 
   const columns: TableProps<Product>["columns"] = [
     {
       title: "Image",
@@ -101,6 +77,15 @@ const ProductPage = () => {
       ),
       
     },
+    {
+      title:'Action',
+      key:'action',
+      render: (_, record) => (
+        <Space>
+          <Button onClick={() => {handleOpenEdit(record._id)}}>Edit</Button>
+        </Space>
+      )
+    }
   ];
   const handleOpenAdd = () => {
     setModalAdd(true);
@@ -119,6 +104,24 @@ const ProductPage = () => {
 
    dispatch(showNotification({message:'thanh cong', type:'success'}))
   };
+
+useEffect(() => {
+  const getListProduct = async() =>{
+    try{
+      const Response =await getProduct()
+      if(Response.status){
+        setData(Response.result.data)
+      }else{
+        dispatch(showNotification({message:Response.message, type:'error'}))
+      }
+    }catch(error){
+      console.log(error)
+    }
+  }
+  if(paramSearch){
+    getListProduct()
+  }
+},[paramSearch])
   return (
     <div>
       <Form>
@@ -132,7 +135,6 @@ const ProductPage = () => {
           extra={
             <Space>
               <Button onClick={handleOpenAdd}>Add</Button>
-              <Button onClick={handleOpenEdit}>Edit</Button>
             </Space>
           }
         >

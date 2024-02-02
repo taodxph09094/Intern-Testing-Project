@@ -1,18 +1,41 @@
 import { Button, Col, Form, Input, Modal, Row } from "antd";
 import React from "react";
+import { postBrand } from "../../Menu/api";
+import { AddBrand } from "../../Menu/dto";
+import { useDispatch } from "react-redux";
+import { showNotification } from "../../../stores/reducers/notificationReducer";
 
 type Props = {
+  setParamSearch: React.Dispatch<React.SetStateAction<object>>
   setModalBrand: React.Dispatch<React.SetStateAction<boolean>>;
   modalBrand: boolean;
 };
 const AddBrand = (props: Props) => {
     const[form] = Form.useForm()
-  const { setModalBrand, modalBrand } = props;
+  const { setModalBrand, modalBrand,setParamSearch } = props;
+  const dispatch = useDispatch()
 
   const handleClose = () => {
     setModalBrand(false);
     form.resetFields()
   };
+  const onSubmit = async (values: AddBrand) => {
+    try{
+      await form.validateFields();
+      const Response = await postBrand(values);
+      if(Response.status){
+        dispatch(showNotification({message:Response.message, type:'success'}))
+        setParamSearch({name:1})
+        handleClose()
+      }else{
+        dispatch(showNotification({message:Response.message, type:'error'}))
+
+      }
+    }catch(error){
+      console.log(error)
+    }
+  }
+
   return (
     <div>
       <Modal
@@ -23,7 +46,7 @@ const AddBrand = (props: Props) => {
         footer={null}
         style={{ textAlign: "center" }}
       >
-        <Form layout="vertical" style={{ margin: '50px 0 20px  0' }}>
+        <Form onFinish={onSubmit} layout="vertical" form={form} style={{ margin: '50px 0 20px  0' }}>
           <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
             <Col span={7}>
               <Form.Item label="Name" name="name">

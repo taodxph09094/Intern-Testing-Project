@@ -2,6 +2,7 @@ import { MenuOutlined } from "@ant-design/icons";
 import AccountList from "../modules/Account";
 import Brand from "../modules/Brand";
 import ProductType from "../modules/Product type";
+import Categories from "../modules/Categories";
 
 export const routes = [
   {
@@ -40,5 +41,12 @@ export const routes = [
     label: "ProductType",
     icon: <ProductType />,
   },
+  {
+    key: "7",
+    path: "/categories",
+    label: "Categories",
+    icon: <Categories />,
+  },
+
 
 ];

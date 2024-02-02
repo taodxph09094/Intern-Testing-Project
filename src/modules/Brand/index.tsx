@@ -1,33 +1,23 @@
-import  { useState } from 'react'
-import { Button, Card,  Popconfirm,  Space,  Table,  TableProps } from 'antd';
+import  { useEffect, useState } from 'react'
+import { Button, Card, Popconfirm, Space, Table, TableProps } from 'antd';
 import { Brand } from '../Menu/dto';
 import AddBrand from './AddBrand';
 import EditBrand from './EditBrand';
+import { getListBrand } from '../Menu/api';
 import { useDispatch } from 'react-redux';
 import { showNotification } from '../../stores/reducers/notificationReducer';
+ 
 
 const Brand = () => {
-    // const [data, setData] = useState()
     const [modalBrand, setModalBrand] = useState(false)
-    const dispatch = useDispatch()
     const [modalEditBrand, setModalEditBrand] = useState(false)
-    const [data, setData] = useState<Brand[]>([
-      {
-        _id:'1',
-        name: "Sample Product 1",
-        status: true,
-        address:'hanoi',
-        phone:'0987654321'
-      },
-      {
-        _id:'2',
-        name: "Sample Product 2",
-        address:'hcm',
-        phone:'0986826189',
-        status: false,
-      },
-    ]);
-
+    const [data, setData] = useState<Brand[] | undefined>([])
+    const [paramSearch, setParamSearch] = useState({})
+    const [selectedRecordId, setSelectedRecordId] = useState<string | null>(null)
+    const [upadteData, setUpdateData] = useState<Brand | null>(null)
+    const dispatch = useDispatch()
+    
+    
      const columns : TableProps<Brand> ["columns"]= [
         {
             title:'Name',
@@ -51,7 +41,7 @@ const Brand = () => {
           render: (_, record) => (
             <Popconfirm
               title={`Are you sure to change the status to ${record.status ? "INACTIVE" : "ACTIVE"}?`}
-              onConfirm={() => handleStatusChange(record)}
+              onConfirm={() => handleStatusChange(record)} 
               okText="Yes"
               cancelText="No"
               okButtonProps={{ style: { background: 'blue', color: 'white' } }}
@@ -63,15 +53,21 @@ const Brand = () => {
           ),
           
         },
+        {
+          title:'Action',
+          key:'action',
+          render:(_, record) =>(
+            <Space>
+              <Button onClick={() =>{setUpdateData(record);handleOpenEdit(record._id)}}>Edit</Button>
+            </Space>
+          )
+          
+        }
      ]
-     console.log(setData)
   const handleOpenBrand = () => {
     setModalBrand(true)
   }
-  const handleOpenEditBrand = () => {
-    setModalEditBrand(true)
 
-  }
   const handleStatusChange = (record: Brand) => {
     const newStatus = !record.status;
     setData((prevData) =>
@@ -79,9 +75,37 @@ const Brand = () => {
         item._id === record._id ? { ...item, status: newStatus } : item
       )
     );
-
-   dispatch(showNotification({message:'thanh cong', type:'success'}))
+  
+    dispatch(showNotification({ message: 'Thành công', type: 'success' }));
   };
+  
+useEffect(() => {
+  
+  const getAllBrand = async () => {
+    try{
+      const Response =await getListBrand();
+      console.log(Response,'oqwp200-')
+      if(Response.status){
+        setData(Response.result.data)
+      }else{
+        dispatch(showNotification({message:Response.message, type:"error"}))
+      }
+    }catch(error) {
+      console.log(error)
+    }
+    
+  }
+  if(paramSearch){
+
+    getAllBrand()
+  }
+},[paramSearch])
+const handleOpenEdit = (recordID: string) =>{
+  setModalEditBrand(true),
+  setSelectedRecordId(recordID)
+
+
+}
   return (
     <div>
       <Card
@@ -89,7 +113,6 @@ const Brand = () => {
       extra={
         <Space>
             <Button onClick={handleOpenBrand}>Add</Button>
-            <Button onClick={handleOpenEditBrand}>Edit</Button>
         </Space>
             }
       >
@@ -99,11 +122,17 @@ const Brand = () => {
       <AddBrand
       modalBrand={modalBrand}
       setModalBrand={setModalBrand}
+      setParamSearch={setParamSearch}
       />
 
       <EditBrand
       modalEditBrand={modalEditBrand}
       setModalEditBrand={setModalEditBrand}
+      setSelectedRecordId={setSelectedRecordId}
+      upadteData={upadteData}
+      selectedRecordId={selectedRecordId}
+      setParamSearch={setParamSearch}
+
       />
     </div>
   )

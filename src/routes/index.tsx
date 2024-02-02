@@ -11,7 +11,7 @@ import SettingPage from "../modules/Setting";
 import AccountList from "../modules/Account";
 import Brand from "../modules/Brand";
 import ProductType from "../modules/Product type";
-import AddNew from "../modules/AddNew";
+import Categories from "../modules/Categories";
 
 type Props = {};
 
@@ -29,6 +29,9 @@ const RenderRouter: React.FC = (props: Props) => {
           <Route path="/account" element={<AccountList />} />
           <Route path="/brand" element={<Brand />} />
           <Route path="/productType" element={<ProductType />} />
+          <Route path="/categories" element={<Categories />} />
+
+
 
 
         </Route>

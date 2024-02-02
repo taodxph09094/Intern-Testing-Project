@@ -17,19 +17,21 @@ export interface AddData {
   isChildren?: boolean;
   children?: AddData;
 }
-
-export interface Product {
-  _id: string;
-  image: string;
-  code: string;
-  name: string;
-  type: string;
-  brand: string;
-  price:   number;
-  size: string;
-  quantity: number;
-  status: boolean;
+export interface Brand {
+  _id:string,
+  name:string,
+  address:string,
+  phone:string,
+  status: boolean,
 }
+export interface AddBrand {
+  _id?:string,
+  name:string,
+  address:string,
+  phone:string,
+  status?: boolean,
+} 
+
 export interface Account {
   _id: string;
   name: string;
@@ -48,14 +50,36 @@ export interface AddAccount{
   
   
 }
-export interface Brand {
+export interface ProductType{
   _id:string,
   name:string,
-  address:string,
-  phone:string,
   status: boolean,
 }
-export interface ProductType{
+export interface AddProductType{
+  _id:string,
+  name:string,
+  status: boolean,
+}
+
+export interface Product {
+  _id: string;
+  image: string;
+  code: string;
+  name: string;
+  type: string;
+  brand: string;
+  price:   number;
+  size: string;
+  quantity: number;
+  status: boolean;
+}
+export interface Categories{
+  _id:string,
+  name:string,
+  status: boolean,
+
+}
+export interface AddCategories{
   _id:string,
   name:string,
   status: boolean,

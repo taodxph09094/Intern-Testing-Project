@@ -1,15 +1,17 @@
 import { Button, Col, Form, Input, Modal, Row } from "antd";
-import React from "react";
+import React, { useEffect }  from "react";
 import { getChinhSuaMenu } from "../api";
 import { useState, ChangeEvent } from "react";
 import { useDispatch } from "react-redux";
 import { showNotification } from "../../../stores/reducers/notificationReducer";
+import { Menu } from "../dto";
 
 type Props = {
   isModalEdit: boolean;
   setIsModalEdit: React.Dispatch<React.SetStateAction<boolean>>;
   selectedRecordId: string | null;
   setParamSearch: React.Dispatch<React.SetStateAction<object>>;
+  updateData: Menu | null
 };
 
 const EditData = (props: Props) => {
@@ -19,39 +21,8 @@ const EditData = (props: Props) => {
   const [newPath, setNewPath] = useState("");
   const [newIcon, setNewIcon] = useState("");
   const [initialValues,setInitialValues] = useState({})
-  const { isModalEdit, setIsModalEdit, selectedRecordId, setParamSearch } =
-    props;
-
-  const handleClose = () => {
-    setIsModalEdit(false);
-    form.resetFields();
-  };
-  const handlleSave = () => {
-    form.submit();
-    setIsModalEdit(false);
-  };
-
-  const getDetailById = async (): Promise<void> => {
-    if (selectedRecordId) { 
-      try {
-        const Newdata = {
-          name: newName,
-          path: newPath,
-          icon: newIcon,
-        };
-        await form.validateFields();
-        const res = await getChinhSuaMenu(selectedRecordId, Newdata);
-          if (res.status) {
-          dispatch(showNotification({ message: res.message, type: "success" }));
-          handleClose();
-          setParamSearch({ name: 1 });
-          
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  };
+  const { isModalEdit, setIsModalEdit, selectedRecordId, setParamSearch,updateData } =
+  props;
   
   const onchangeNewName = (e: ChangeEvent<HTMLInputElement>) => {
     setNewName(e.currentTarget.value);
@@ -62,7 +33,60 @@ const EditData = (props: Props) => {
   const onchangeNewIcon = (e: ChangeEvent<HTMLInputElement>) => {
     setNewIcon(e.currentTarget.value);
   };
+
+  useEffect(() => {
+    if (updateData) {
+      form.setFieldsValue({
+        name:updateData.name,  
+        path: updateData.path,
+        icon: updateData.icon,
+      });
+      setInitialValues({
+        name: updateData.name,
+        path: updateData.path,
+        icon: updateData.icon,
+      });
+    }
+  }, [updateData, form,setInitialValues]);
+
+
+
+  const getUpdateMenu = async (): Promise<void> => {
+    if (selectedRecordId) { 
   
+      try {
+        const Newdata = {
+          name: newName,
+          path: newPath,
+          icon: newIcon,
+        };
+        await form.validateFields(
+        );
+        const res = await getChinhSuaMenu(selectedRecordId, Newdata);
+          if (res.status) {
+          dispatch(showNotification({ message: res.message, type: "success" }));
+          handleClose();
+          setParamSearch({ name: 1 });
+
+          
+          
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+  
+  const handleClose = () => {
+    setIsModalEdit(false);
+    form.resetFields();
+    
+  };
+  const handlleSave = () => {
+    form.submit();
+    
+    setIsModalEdit(false);
+  };
 
   return (
     <div>
@@ -73,12 +97,12 @@ const EditData = (props: Props) => {
         width={700}
         footer={null}
         onCancel={handleClose}
-        
+
       >
         <div>
           <Form 
-          
-            onFinish={getDetailById}
+
+            onFinish={getUpdateMenu}
             initialValues={initialValues}
             form={form}
             style={{ margin: 30 }}

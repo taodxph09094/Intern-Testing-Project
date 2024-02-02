@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Col, Form, Input, Modal, Row} from "antd";
-import { AddProductType} from "../../Menu/dto";
-import { postProductType } from '../../Menu/api/index';
+import { AddCategories} from "../../Menu/dto";
+import { postCategories } from '../../Menu/api/index';
 import { useDispatch } from "react-redux";
 import { showNotification } from "../../../stores/reducers/notificationReducer";
 
@@ -10,17 +10,18 @@ type Props = {
   setModalType: React.Dispatch<React.SetStateAction<boolean>>;
   setparamSearch: React.Dispatch<React.SetStateAction<object>>
 };
-const AddProductType = (props: Props) => {
+const AddCategories = (props: Props) => {
   const { modalType, setModalType,setparamSearch } = props;
   const[from] = Form.useForm()
   const dispatch =useDispatch()
   const handleClose = () => {
     setModalType(false);
+    from.resetFields()
   };
-  const onsubmit = async(values: AddProductType) =>{
+  const onsubmit = async(values: AddCategories) =>{
     try{
       await from.validateFields()
-      const Response = await postProductType(values)
+      const Response = await postCategories(values)
       if(Response.status){
         dispatch(showNotification({ message: Response.message, type: "success" }));
         handleClose();
@@ -34,7 +35,7 @@ const AddProductType = (props: Props) => {
   return (
     <div>
       <Modal
-        title="Add Product Type"
+        title="Add Categories"
         open={modalType}
         onCancel={handleClose}
         style={{textAlign:'center'}}
@@ -57,4 +58,4 @@ const AddProductType = (props: Props) => {
   );
 };
 
-export default AddProductType;
+export default AddCategories;

@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { Button, Col, Form, Input, Modal, Row } from "antd";
 import { ProductType } from "../../Menu/dto";
-import { putProductType } from "../../Menu/api";
+import { putCategories } from "../../Menu/api";
 import { useDispatch } from "react-redux";
 import { showNotification } from "../../../stores/reducers/notificationReducer";
 
@@ -10,9 +10,9 @@ type Props = {
   setModalEditType: React.Dispatch<React.SetStateAction<boolean>>;
   updateData: ProductType | null;
   selectedRecordId: string | null;
-  setparamSearch: React.Dispatch<React.SetStateAction<object>>
+  setparamSearch: React.Dispatch<React.SetStateAction<{}>>
 };
-const EditProductType = (props: Props) => {
+const EditCategories = (props: Props) => {
   const { modalEditType, setModalEditType, updateData, selectedRecordId,setparamSearch } =
     props;
   const [from] = Form.useForm();
@@ -42,7 +42,7 @@ const EditProductType = (props: Props) => {
           name: newName,
         };
         await from.validateFields();
-        const Response = await putProductType(selectedRecordId, newData);
+        const Response = await putCategories(selectedRecordId, newData);
         if (Response.status) {
           dispatch(
             showNotification({ message: Response.message, type: "success" })
@@ -93,4 +93,4 @@ const EditProductType = (props: Props) => {
   );
 };
 
-export default EditProductType;
+export default EditCategories;

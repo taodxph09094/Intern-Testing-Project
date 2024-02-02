@@ -12,6 +12,8 @@ const MenuPage: React.FC = () => {
   const [isModal, setIsModal] = useState(false);
   const [isModalEdit, setIsModalEdit] = useState(false);
   const dispatch = useDispatch();
+  const [updateData,setUpdateData] = useState<Menu | null>(null);
+
   const [paramSearch, setParamSearch] = useState({});
   const [selectedRecordId, setSelectedRecordId] = useState<string | null>(null);
   const columns: TableProps<Menu>["columns"] = [
@@ -46,21 +48,21 @@ const MenuPage: React.FC = () => {
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <Button onClick={() => handleEdit(record._id)}>Edit</Button>
+          <Button onClick={() => {setUpdateData(record);handleEdit(record._id)}}>Edit</Button>
           <Button onClick={() => handleDelete(record._id)}>Delete</Button>
         </Space>
       ),
     },
   ];
 
+
   useEffect(() => {
     const getListMenu = async () => {
       try {
         const response = await getDanhSachMenu();
-        console.log(response)
+        // console.log(response)
         if (response.status) {
           setData(response.result.data);  
-
         } else {
           dispatch(
             showNotification({ message: response.message, type: "error" })
@@ -78,7 +80,6 @@ const MenuPage: React.FC = () => {
   const handleDelete = async (_id: string) => {
     try {
       const res = await getXoaMenu(_id);
-      console.log(res, "cuong");
       if (res.status) {
         dispatch(showNotification({ message: res.message, type: "success" }));
        setParamSearch({name: 1})
@@ -95,8 +96,8 @@ const MenuPage: React.FC = () => {
   const handleEdit = (recordId: string) => {
     setSelectedRecordId(recordId);
     setIsModalEdit(true);
+    
   };
-
   const viewTable = useMemo(() => {
     return <Table columns={columns} dataSource={data} />;
   }, [data]);
@@ -137,7 +138,7 @@ const MenuPage: React.FC = () => {
         isModalEdit={isModalEdit}
         setIsModalEdit={setIsModalEdit}
         selectedRecordId={selectedRecordId}
-        
+        updateData={updateData}
       />
     </div>
   );

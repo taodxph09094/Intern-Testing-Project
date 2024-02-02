@@ -73,10 +73,8 @@ const AccountList = () => {
     const getListTaiKhoa = async () => {
       try {
         const Response = await getListAccount();
-        // console.log(Response.result, "cuong1");
         if (Response.status) {
           setData(Response.result.data);
-          console.log(Response.result, "haiis");
         } else {
           dispatch(
             showNotification({ message: Response.message, type: "error" })
@@ -94,7 +92,6 @@ const AccountList = () => {
   const handleDeletAcc = async (_id: string) => {
     try {
       const respone = await getXoaAccount(_id);
-      console.log(respone,'comg')
       if (respone.status.valueOf()) {
         dispatch(
           showNotification({ message: respone.message, type: "success" })
@@ -102,7 +99,7 @@ const AccountList = () => {
           console.log(respone.status.valueOf,'cpowe'),
 
         setParamSearch({ name: 1 });
-        console.log(respone.status, "-000");
+        // console.log(respone.status, "-000");
       } else {
         dispatch(showNotification({ message: respone.message, type: "error" }));
       }

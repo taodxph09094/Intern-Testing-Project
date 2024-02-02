@@ -1,27 +1,29 @@
-import { Button, Card, Space, TableProps, Table, Form, Input, Popconfirm } from "antd";
-import { useState } from "react";
-import {  ProductType } from "../Menu/dto/index";
+import {
+  Button,
+  Card,
+  Space,
+  TableProps,
+  Table,
+  Form,
+  Input,
+  Popconfirm,
+} from "antd";
+import { useEffect, useState } from "react";
+import { ProductType } from "../Menu/dto/index";
 import AddProductType from "./AddProductType";
 import EditProductType from "./EditPructType";
 import { useDispatch } from "react-redux";
 import { showNotification } from "../../stores/reducers/notificationReducer";
+import { deleteProductType, getListProductType } from "../Menu/api";
 
 const ProductType = () => {
-  const dispatch = useDispatch()
-  const [modalType, setModalType] = useState(false)
-  const [modalEditType, setModalEditType] = useState(false)
-  const [data, setData] = useState<ProductType[]>([
-    {
-      _id:'1',
-      name:'cuong',
-      status: true,
-    },
-    {
-      _id:'2',
-      name: "Sample Product 2",
-      status: false,
-    },
-  ]);
+  const dispatch = useDispatch();
+  const [modalType, setModalType] = useState(false);
+  const [modalEditType, setModalEditType] = useState(false);
+  const [data, setData] = useState<ProductType[] | undefined>([]);
+  const [paramSearch, setparamSearch] = useState({});
+  const [updateData,setUpdateData] =useState<ProductType | null >(null)
+  const [selectedRecordId, setSelectedRecordId] = useState<string | null>(null)
 
   const columns: TableProps<ProductType>["columns"] = [
     {
@@ -34,28 +36,40 @@ const ProductType = () => {
       key: "status",
       dataIndex: "status",
       render: (_, record) => (
-        
         <Popconfirm
-          title={`Are you sure to change the status to ${record.status ? "INACTIVE" : "ACTIVE"}?`}
+          title={`Are you sure to change the status to ${
+            record.status ? "INACTIVE" : "ACTIVE"
+          }?`}
           onConfirm={() => handleStatusChange(record)}
           okText="Yes"
           cancelText="No"
-          okButtonProps={{ style: { background: 'blue', color: 'white' } }}
-          
+          okButtonProps={{ style: { background: "blue", color: "white" } }}
         >
-          <Button style={{ color: record.status ? 'Blue' : 'red' }}>{record.status ? "ACTIVE" : "INACTIVE"}</Button>
+          <Button style={{ color: record.status ? "Blue" : "red" }}>
+            {record.status ? "ACTIVE" : "INACTIVE"}
+          </Button>
         </Popconfirm>
-       
       ),
-      
     },
+    {
+      title:'Action',
+      key:'action',
+      render:(_, record) =>(
+        <Space>
+              <Button onClick={() =>{setUpdateData(record);handleOpenEdit(record._id)}}>Edit</Button>
+              <Button onClick={() => hanleDelete(record._id)} >Delete</Button>
+        </Space>
+      )
+    }
   ];
   const handleOpenProType = () => {
-    setModalType(true)
-  }
-  const handleOpenEdit = () => {
-    setModalEditType(true)
-  }
+    setModalType(true);
+  };
+  const handleOpenEdit = (recordId : string) => {
+    setModalEditType(true);
+    setSelectedRecordId(recordId)
+
+  };
   const handleStatusChange = (record: ProductType) => {
     const newStatus = !record.status;
     setData((prevData) =>
@@ -64,21 +78,54 @@ const ProductType = () => {
       )
     );
 
-   dispatch(showNotification({message:'thanh cong', type:'success'}))
+    dispatch(showNotification({ message: "thanh cong", type: "success" }));
   };
+  useEffect(() => {
+    const getAllProductType = async () => {
+      try {
+        const Response = await getListProductType();
+        if (Response.status) {
+          setData(Response.result.data);
+        } else {
+          dispatch(
+            showNotification({ message: Response.message, type: "error" })
+          );
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    if (paramSearch) {
+      getAllProductType();
+    }
+  }, [paramSearch]);
+
+  const hanleDelete = async(_id: string) =>{
+    try{
+      const Response = await deleteProductType(_id)
+    if(Response.status){
+      dispatch(showNotification({message:Response.message, type:"success"}))
+      setparamSearch({name: 1})
+    }else{
+      dispatch(showNotification({message:Response.message, type:"error"}))
+
+    }
+    }catch(error){
+      console.log(error)
+    }
+  }
   return (
     <div>
       <Form>
         <Card>
-         <div 
-             style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-
-         >
-            <Input placeholder="search" style={{width:500}} />
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Input placeholder="search" style={{ width: 500 }} />
             <Button>Search</Button>
           </div>
         </Card>
@@ -87,7 +134,6 @@ const ProductType = () => {
           style={{ marginTop: 20 }}
           extra={
             <Space>
-              <Button onClick={handleOpenEdit}>Edit</Button>
               <Button onClick={handleOpenProType}>Add</Button>
             </Space>
           }
@@ -95,13 +141,13 @@ const ProductType = () => {
           <Table columns={columns} dataSource={data} />
         </Card>
       </Form>
-      <AddProductType
-      modalType={modalType}
-      setModalType={setModalType}
-      />
+      <AddProductType  modalType={modalType} setModalType={setModalType} setparamSearch={setparamSearch} />
       <EditProductType
-      modalEditType={modalEditType}
-      setModalEditType={setModalEditType}
+        modalEditType={modalEditType}
+        setModalEditType={setModalEditType}
+        updateData={updateData}
+        selectedRecordId={selectedRecordId}
+        setparamSearch={setparamSearch}
       />
     </div>
   );
